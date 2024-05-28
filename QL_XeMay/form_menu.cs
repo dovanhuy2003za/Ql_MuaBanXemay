@@ -35,7 +35,7 @@ namespace QL_XeMay
         {
             DataSet data = new DataSet();
             //Sqlconnection
-            string query = "select*from KhachHang";
+            string query = "select MaKh,TenKh,SDT,DiaChi from KhachHang";
             using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
             {
                 conn.Open();
@@ -49,7 +49,7 @@ namespace QL_XeMay
         {
             DataSet data = new DataSet();
             //Sqlconnection
-            string query = "select*from Khohang";
+            string query = "select MaSp,TenSp,Nsx,Soluong,Gianhap from KhoHang";
             using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
             {
                 conn.Open();
@@ -63,7 +63,7 @@ namespace QL_XeMay
         {
             DataSet data = new DataSet();
             //Sqlconnection
-            string query = "select*from NhanVien";
+            string query = "select MaNv,TenNv,SDT,NgaySinh,DiaChi,luong from NhanVien";
             using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
             {
                 conn.Open();
@@ -76,7 +76,7 @@ namespace QL_XeMay
         DataSet GetAllChiTietHoaDon()
         {
             DataSet data = new DataSet();
-            string query = "select * from ChiTietHoaDon";
+            string query = "select MaHd,MaKh,MaNv,NgayBan from HoaDon";
             using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
             {
                 conn.Open();
@@ -91,7 +91,7 @@ namespace QL_XeMay
         {
             int i;
             i = dataGridView_khachhang.CurrentRow.Index;
-            Makh.Text = dataGridView_khachhang.Rows[i].Cells[0].Value.ToString();
+            textBox2.Text = dataGridView_khachhang.Rows[i].Cells[0].Value.ToString();
             Tenkh.Text = dataGridView_khachhang.Rows[i].Cells[1].Value.ToString();
             Sdt.Text = dataGridView_khachhang.Rows[i].Cells[2].Value.ToString();
             diachi.Text = dataGridView_khachhang.Rows[i].Cells[3].Value.ToString();
@@ -101,7 +101,7 @@ namespace QL_XeMay
         {
             int i;
             i = dataGridView_khohang.CurrentRow.Index;
-            MaSp.Text = dataGridView_khohang.Rows[i].Cells[0].Value.ToString();
+            textBox3.Text = dataGridView_khohang.Rows[i].Cells[0].Value.ToString();
             TebSp.Text = dataGridView_khohang.Rows[i].Cells[1].Value.ToString();
             Nsx.Text = dataGridView_khohang.Rows[i].Cells[2].Value.ToString();
             SoLuong.Text = dataGridView_khohang.Rows[i].Cells[3].Value.ToString();
@@ -112,12 +112,12 @@ namespace QL_XeMay
         {
             int i;
             i = dataGridView_nhanvien.CurrentRow.Index;
-            Manv.Text = dataGridView_nhanvien.Rows[i].Cells[0].Value.ToString();
+            textBox4.Text = dataGridView_nhanvien.Rows[i].Cells[0].Value.ToString();
             TenNv.Text = dataGridView_nhanvien.Rows[i].Cells[1].Value.ToString();
             sdt1.Text = dataGridView_nhanvien.Rows[i].Cells[2].Value.ToString();
-            NgaySinh.Text = dataGridView_nhanvien.Rows[i].Cells[4].Value.ToString();
+            NgaySinh.Text = dataGridView_nhanvien.Rows[i].Cells[3].Value.ToString();
             luong.Text = dataGridView_nhanvien.Rows[i].Cells[5].Value.ToString();
-            diachi1.Text = dataGridView_nhanvien.Rows[i].Cells[3].Value.ToString();
+            diachi1.Text = dataGridView_nhanvien.Rows[i].Cells[4].Value.ToString();
         }
         //them kho hang
         private void btn_them2_Click(object sender, EventArgs e)
@@ -137,6 +137,7 @@ namespace QL_XeMay
             TebSp.Text = Nsx.Text = SoLuong.Text = GiaNhap.Text = "";
             TebSp.Focus();
             dataGridView_khohang.DataSource = GetAllKhoHang().Tables[0];
+            //MessageBox.Show("Thêm thành công ");
         }
         //them khach hang
         private void btn_them_Click(object sender, EventArgs e)
@@ -164,7 +165,7 @@ namespace QL_XeMay
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sqledit, conn);
-                cmd.Parameters.AddWithValue("MaSp", MaSp.Text);
+                cmd.Parameters.AddWithValue("MaSp", textBox3.Text);
                 cmd.Parameters.AddWithValue("TenSp", TebSp.Text);
                 cmd.Parameters.AddWithValue("Nsx", Nsx.Text);
                 cmd.Parameters.AddWithValue("Soluong", SoLuong.Text);
@@ -172,63 +173,68 @@ namespace QL_XeMay
                 cmd.ExecuteNonQuery();
                 conn.Close();
             }
-            MaSp.Text = TebSp.Text = Nsx.Text = SoLuong.Text = GiaNhap.Text = "";
-            MaSp.Focus();
+            TebSp.Text = Nsx.Text = SoLuong.Text = GiaNhap.Text = textBox3.Text = "";
+            TebSp.Focus();
             dataGridView_khohang.DataSource = GetAllKhoHang().Tables[0];
         }
         //xoa kho hang
         private void btn_xoa2_Click(object sender, EventArgs e)
         {
             string sqldelete = "delete from KhoHang where MaSp=@MaSp";
-            using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
+            DialogResult dl = MessageBox.Show("Bạn có chắc chắn muốn xóa không ?", "cảnh báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (dl == DialogResult.OK)
             {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(sqldelete, conn);
-                cmd.Parameters.AddWithValue("MaSp", MaSp.Text);
-                cmd.Parameters.AddWithValue("TenSp", TebSp.Text);
-                cmd.Parameters.AddWithValue("Nsx", Nsx.Text);
-                cmd.Parameters.AddWithValue("Soluong", SoLuong.Text);
-                cmd.Parameters.AddWithValue("Gianhap", GiaNhap.Text);
-                cmd.ExecuteNonQuery();
-                conn.Close();
+                using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sqldelete, conn);
+                    cmd.Parameters.AddWithValue("MaSp", textBox3.Text);
+
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
             }
-            MaSp.Text = TebSp.Text = Nsx.Text = SoLuong.Text = GiaNhap.Text = "";
-            MaSp.Focus();
+
+            TebSp.Text = Nsx.Text = SoLuong.Text = GiaNhap.Text = textBox3.Text = "";
+            TebSp.Focus();
             dataGridView_khohang.DataSource = GetAllKhoHang().Tables[0];
         }
         //sua khach hang
         private void btn_sua_Click(object sender, EventArgs e)
         {
-            string sqledit = "update KhachHang set TenKh=@TenKh,SDT=@SDT,DiaChi=@DiaChi where MaSp=@MaSp";
+            string sqledit = "update KhachHang set TenKh=@TenKh,SDT=@SDT,DiaChi=@DiaChi where MaKh=@MaKh";
             using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sqledit, conn);
+                cmd.Parameters.AddWithValue("MaKh", textBox2.Text);
                 cmd.Parameters.AddWithValue("TenKh", Tenkh.Text);
                 cmd.Parameters.AddWithValue("SDT", Sdt.Text);
                 cmd.Parameters.AddWithValue("DiaChi", diachi.Text);
                 cmd.ExecuteNonQuery();
                 conn.Close();
             }
-            Tenkh.Text = Sdt.Text = diachi.Text = "";
+            Tenkh.Text = Sdt.Text = diachi.Text = textBox2.Text = "";
             Tenkh.Focus();
             dataGridView_khachhang.DataSource = GetAllKhachHang().Tables[0];
         }
         //xoa khach hang
         private void btn_xoa_Click(object sender, EventArgs e)
         {
-            string sqldelete = "delete from KhachHang where MaSp=@MaSp";
-            using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
+            string sqldelete = "delete from KhachHang where MaKh=@MaKh";
+            DialogResult dl = MessageBox.Show("Bạn có chắc chắn muốn xóa không ?", "cảnh báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (dl == DialogResult.OK)
             {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(sqldelete, conn);
-                cmd.Parameters.AddWithValue("TenKh", Tenkh.Text);
-                cmd.Parameters.AddWithValue("SDT", Sdt.Text);
-                cmd.Parameters.AddWithValue("DiaChi", diachi.Text);
-                cmd.ExecuteNonQuery();
-                conn.Close();
+                using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sqldelete, conn);
+                    cmd.Parameters.AddWithValue("MaKh", textBox2.Text);
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
             }
-            Tenkh.Text = Sdt.Text = diachi.Text = "";
+            Tenkh.Text = Sdt.Text = diachi.Text = textBox2.Text = "";
             Tenkh.Focus();
             dataGridView_khachhang.DataSource = GetAllKhachHang().Tables[0];
         }
@@ -260,7 +266,7 @@ namespace QL_XeMay
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sqledit, conn);
-                cmd.Parameters.AddWithValue("TenNv", TenNv.Text);
+                cmd.Parameters.AddWithValue("TenNv", textBox4.Text);
                 cmd.Parameters.AddWithValue("SDT", sdt1.Text);
                 cmd.Parameters.AddWithValue("DiaChi", diachi1.Text);
                 cmd.Parameters.AddWithValue("NgaySinh", Convert.ToDateTime(NgaySinh.Text));
@@ -268,7 +274,7 @@ namespace QL_XeMay
                 cmd.ExecuteNonQuery();
                 conn.Close();
             }
-            TenNv.Text = sdt1.Text = diachi1.Text = NgaySinh.Text = luong.Text = "";
+            TenNv.Text = sdt1.Text = diachi1.Text = NgaySinh.Text = luong.Text = textBox4.Text = "";
             TenNv.Focus();
             dataGridView_nhanvien.DataSource = GetAllNhanVien().Tables[0];
         }
@@ -276,19 +282,20 @@ namespace QL_XeMay
         private void btn_xoa1_Click(object sender, EventArgs e)
         {
             string sqldelete = "delete from NhanVien where MaNv=@MaNV";
-            using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
+            DialogResult dl = MessageBox.Show("Bạn có chắc chắn muốn xóa không ?", "cảnh báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (dl == DialogResult.OK)
             {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(sqldelete, conn);
-                cmd.Parameters.AddWithValue("TenNv", TenNv.Text);
-                cmd.Parameters.AddWithValue("SDT", sdt1.Text);
-                cmd.Parameters.AddWithValue("DiaChi", diachi1.Text);
-                cmd.Parameters.AddWithValue("NgaySinh", Convert.ToDateTime(NgaySinh.Text));
-                cmd.Parameters.AddWithValue("luong", luong.Text);
-                cmd.ExecuteNonQuery();
-                conn.Close();
+                using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sqldelete, conn);
+                    cmd.Parameters.AddWithValue("TenNv", textBox4.Text);
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
             }
-            TenNv.Text = sdt1.Text = diachi1.Text = NgaySinh.Text = luong.Text = "";
+
+            TenNv.Text = sdt1.Text = diachi1.Text = NgaySinh.Text = luong.Text = textBox4.Text = "";
             TenNv.Focus();
             dataGridView_nhanvien.DataSource = GetAllNhanVien().Tables[0];
         }
@@ -296,69 +303,61 @@ namespace QL_XeMay
         //them hoa don
         private void btn_themhd_Click(object sender, EventArgs e)
         {
-            string sqlinsert = "insert into ChiTietHoaDon(TenHd,MaNv,MaKh,MaSp,TenSp,Soluongdat,dongia,NgayBan) values(@TenHd,@MaNv,@MaKh,@MaSp,@TenSp,@Soluongdat,@dongia,@NgayBan)";
+            string sqlinsert = "insert into HoaDon(MaNv,MaKh,NgayBan) values(@MaNv,@MaKh,@NgayBan)";
+
+
             using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sqlinsert, conn);
-                cmd.Parameters.AddWithValue("TenHd", TenHd.Text);
                 cmd.Parameters.AddWithValue("MaNv", textBox3_Manv.Text);
                 cmd.Parameters.AddWithValue("MaKh", textBox4_Makh.Text);
-                cmd.Parameters.AddWithValue("MaSp", textBox5_Masp.Text);
-                cmd.Parameters.AddWithValue("TenSp", textBox6_Tensp.Text);
-                cmd.Parameters.AddWithValue("Soluongdat", textBox7_sldat.Text);
-                cmd.Parameters.AddWithValue("dongia", textBox8_dongia.Text);
                 cmd.Parameters.AddWithValue("NgayBan", Convert.ToDateTime(nb.Text));
                 cmd.ExecuteNonQuery();
                 conn.Close();
             }
-            TenHd.Text = textBox3_Manv.Text = textBox4_Makh.Text = textBox5_Masp.Text = textBox6_Tensp.Text = textBox7_sldat.Text = textBox8_dongia.Text = "";
-            TenHd.Focus();
+            textBox3_Manv.Text = textBox4_Makh.Text = "";
+            textBox3_Manv.Focus();
             dataGridView_ChiTietHoaDon.DataSource = GetAllChiTietHoaDon().Tables[0];
+            var myform = new ChiTietHoaDon();
+            myform.Show();
         }
         //xoa hoa don
         private void btn_xoahd_Click(object sender, EventArgs e)
         {
-            string sqldelete = "delete from ChiTietHoaDon where MaHd=@MaHd";
-            using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
+            string sqldelete = "delete from HoaDon where MaHd=@MaHd";
+            DialogResult dl = MessageBox.Show("Bạn có chắc chắn muốn xóa không ?", "cảnh báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (dl == DialogResult.OK)
             {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(sqldelete, conn);
-                cmd.Parameters.AddWithValue("MaHd", MaHd.Text);
-                cmd.Parameters.AddWithValue("TenHd", TenHd.Text);
-                cmd.Parameters.AddWithValue("MaNv", textBox3_Manv.Text);
-                cmd.Parameters.AddWithValue("MaKh", textBox4_Makh.Text);
-                cmd.Parameters.AddWithValue("MaSp", textBox5_Masp.Text);
-                cmd.Parameters.AddWithValue("TenSp", textBox6_Tensp.Text);
-                cmd.Parameters.AddWithValue("Soluongdat", textBox7_sldat.Text);
-                cmd.Parameters.AddWithValue("dongia", textBox8_dongia.Text);
-                cmd.Parameters.AddWithValue("NgayBan", Convert.ToDateTime(nb.Text));
-                cmd.ExecuteNonQuery();
-                conn.Close();
+                using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sqldelete, conn);
+                    cmd.Parameters.AddWithValue("MaHd", textBox1.Text);
+
+
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
             }
-            MaHd.Text = TenHd.Text = textBox3_Manv.Text = textBox4_Makh.Text = textBox5_Masp.Text = textBox6_Tensp.Text = textBox7_sldat.Text = textBox8_dongia.Text = "";
-            TenHd.Focus();
+
+            textBox1.Text = "";
+            textBox1.Focus();
             dataGridView_ChiTietHoaDon.DataSource = GetAllChiTietHoaDon().Tables[0];
         }
         private void dataGridView_ChiTietHoaDon_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            int i;
-            i = dataGridView_ChiTietHoaDon.CurrentRow.Index;
-            MaHd.Text = dataGridView_ChiTietHoaDon.Rows[i].Cells[0].Value.ToString();
-            TenHd.Text = dataGridView_ChiTietHoaDon.Rows[i].Cells[1].Value.ToString();
-            textBox3_Manv.Text = dataGridView_ChiTietHoaDon.Rows[i].Cells[2].Value.ToString();
-            textBox4_Makh.Text = dataGridView_ChiTietHoaDon.Rows[i].Cells[4].Value.ToString();
-            textBox5_Masp.Text = dataGridView_ChiTietHoaDon.Rows[i].Cells[5].Value.ToString();
-            textBox6_Tensp.Text = dataGridView_ChiTietHoaDon.Rows[i].Cells[6].Value.ToString();
-            textBox7_sldat.Text = dataGridView_ChiTietHoaDon.Rows[i].Cells[7].Value.ToString();
-            textBox8_dongia.Text = dataGridView_ChiTietHoaDon.Rows[i].Cells[8].Value.ToString();
-            nb.Text = dataGridView_ChiTietHoaDon.Rows[i].Cells[9].Value.ToString();
+            var myform = new ChiTietHoaDon();
+            myform.Show();
+
+
         }
         //thong ke
+
         DataSet tknam()
         {
             DataSet data = new DataSet();
-            string sqlselct = "select * from ChiTietHoaDon where (select YEAR(NgayBan))=(select YEAR(GetDate()));";
+            string sqlselct = "select b.TenSp,a.Soluongdat  from dbo.ChiTietHoaDon as a ,dbo.KhoHang as b,dbo.HoaDon as c\r\nwhere a.MaSp=b.MaSp  and  a.Mahd1=c.MaHd and YEAR(c.NgayBan)=YEAR(GETDATE())";
             using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
             {
                 conn.Open();
@@ -371,7 +370,7 @@ namespace QL_XeMay
         DataSet tkthang()
         {
             DataSet data = new DataSet();
-            string sqlselct = "select * from ChiTietHoaDon where (select Month(NgayBan))=(select Month(GetDate()));";
+            string sqlselct = "select b.TenSp,a.Soluongdat  from dbo.ChiTietHoaDon as a ,dbo.KhoHang as b,dbo.HoaDon as c\r\nwhere a.MaSp=b.MaSp  and  a.Mahd1=c.MaHd and Month(c.NgayBan)=Month(GETDATE())";
             using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
             {
                 conn.Open();
@@ -384,7 +383,7 @@ namespace QL_XeMay
         DataSet tktheosoluongban()
         {
             DataSet data = new DataSet();
-            string sqlselct = "select MaSp,TenSp,Soluongdat from ChiTietHoaDon where MaSp=(select top 1 MaSp from ChiTietHoaDon group by MaSp order by SUM(Soluongdat) desc);";
+            string sqlselct = "select b.TenSp,a.Soluongdat,c.NgayBan from ChiTietHoaDon as a ,KhoHang as b,HoaDon as c \r\nwhere a.MaSp=(select top 1 MaSp from ChiTietHoaDon group by MaSp order by SUM(Soluongdat) desc) and a.MaSp=b.MaSp  and  a.Mahd1=c.MaHd ;";
             using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
             {
                 conn.Open();
@@ -394,10 +393,13 @@ namespace QL_XeMay
             }
             return data;
         }
+
+
+
         //tim kiem khach hang 
         public void serchkhachahng(string valuestofind)
         {
-            string query = "select* from KhachHang where TenKh like'%" + valuestofind + "%'";
+            string query = "select TenKh,SDT,DiaChi from KhachHang where TenKh like'%" + valuestofind + "%'";
             using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
             {
                 conn.Open();
@@ -415,7 +417,7 @@ namespace QL_XeMay
         //tim kiem san pham
         public void serchkhohang(string valuestofind)
         {
-            string query = "select* from KhoHang where TenSp like N'%" + valuestofind + "%'";
+            string query = "select TenSp,Nsx,Soluong,Gianhap from KhoHang where TenSp like N'%" + valuestofind + "%'";
             using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
             {
                 conn.Open();
@@ -433,7 +435,7 @@ namespace QL_XeMay
         //tim kiem nhan vien 
         public void serchnhanvien(string valuestofind)
         {
-            string query = "select* from NhanVien where TenNv like N'%" + valuestofind + "%'";
+            string query = "select TenNv,SDT,NgaySinh,DiaChi,luong from NhanVien where TenNv like N'%" + valuestofind + "%'";
             using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
             {
                 conn.Open();
@@ -449,24 +451,10 @@ namespace QL_XeMay
         {
             serchnhanvien(textBox1_tknv.Text);
         }
-        //tim kiem hoa don
-        public void serchhoadon(string valuestofind)
-        {
-            string query = "select* from ChiTietHoaDon where TenHd like N'%" + valuestofind + "%'";
-            using (SqlConnection conn = new SqlConnection(ConnectionDatabase.connection))
-            {
-                conn.Open();
-                SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
-                DataTable table = new DataTable();
-                adapter.Fill(table);
-                dataGridView_ChiTietHoaDon.DataSource = table;
-                conn.Close();
-            }
-        }
 
-        private void textBox1_tkhd_TextChanged(object sender, EventArgs e)
+        private void groupBox7_Enter(object sender, EventArgs e)
         {
-            serchhoadon(textBox1_tkhd.Text);
+
         }
     }
 }

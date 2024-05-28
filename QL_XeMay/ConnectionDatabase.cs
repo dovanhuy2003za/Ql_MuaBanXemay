@@ -8,6 +8,6 @@ namespace QL_XeMay
 {
     internal class ConnectionDatabase
     {
-        public static string connection = @"Data Source=DESKTOP-E6VJELJ;Initial Catalog=ql_MuaBanXeMay;Integrated Security=True";
+        public static string connection = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\DoAn1_QLXeMay\Ql_MuaBanXemay\QL_XeMay\bin\Debug\net8.0-windows\ql_muabanxemay.mdf;Integrated Security=True;Connect Timeout=30";
     }
 }
